@@ -1,0 +1,127 @@
+@define-color surface0 #1f1f28; /* Dark background for the bar */
+@define-color surface1 #16161d; /* Slightly different dark shade, used for active workspace */
+@define-color text #dcd7ba;    /* Main text color */
+@define-color accent1 #7e9cd8; /* Workspace button color */
+@define-color accent2 #e6c384; /* Focused/hover workspace color */
+@define-color accent3 #7aa89f; /* Network, Power profiles color */
+@define-color accent4 #c0a36e; /* Pulseaudio color */
+@define-color accent5 #98bb6c; /* Battery color */
+@define-color accent6 #9cabca; /* Idle inhibitor color */
+@define-color border_color #444; /* A subtle border color, slightly lighter than bg */
+
+* {
+  font-family: FantasqueSansMono Nerd Font;
+  font-size: 14px;
+  min-height: 0;
+  /* Reset borders and radius for all module elements by default */
+  border: none;
+  border-radius: 0;
+}
+
+#waybar {
+  background-color: @surface0; /* Solid background for the whole bar */
+  color: @text;
+  margin: 0; /* Remove margins to span full width */
+  padding: 0 5px; /* Add small horizontal padding so modules aren't glued to screen edges */
+  border-bottom: 2px solid @border_color;
+}
+
+/* Style for modules containers - control padding and margin BETWEEN modules */
+#clock,
+#workspaces,
+#tray,
+#battery,
+#pulseaudio,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#network,
+#idle_inhibitor,
+#power-profiles-daemon,
+#custom-vpn,
+#custom-headsetbattery {
+  background: none; /* Remove individual module backgrounds */
+  padding: 0.25rem 0.5rem; /* Adjust padding within modules as needed */
+  margin: 0 3px; /* Add small horizontal margin BETWEEN modules */
+  color: @text; /* Default text color for modules */
+}
+
+/* === Specific Module Colors === */
+
+#clock {
+  /* Clock uses default text color */
+}
+
+#workspaces {
+  padding: 0; /* Remove container padding, button padding will handle it */
+  margin-left: 5px; /* Slightly more margin on the left */
+}
+
+#workspaces button {
+  color: @accent1;
+  padding: 0.2rem 0.4rem; /* Padding inside each workspace button */
+  margin: 3px 3px; /* Small margin around buttons */
+  border-radius: 8px; /* Keep some rounding for the buttons themselves */
+}
+
+#workspaces button.focused {
+  color: @accent2;
+}
+
+#workspaces button.active {
+  color: @accent2;
+  background-color: @surface1;
+}
+
+#workspaces button.urgent {
+  color: @text;
+  background-color: #c94f6d;
+}
+
+#workspaces button:hover {
+  background: @surface1;
+  color: @accent2;
+}
+
+#network,
+#power-profiles-daemon {
+  color: @accent3;
+}
+
+#pulseaudio {
+  color: @accent4;
+}
+#pulseaudio.percentage {
+  color: @text;
+}
+
+
+#battery {
+  color: @accent5;
+}
+#battery.charging {
+  color: @text;
+}
+#battery.warning:not(.charging) {
+  color: @accent4;
+}
+
+#idle_inhibitor {
+  color: @accent6;
+}
+
+#tray {
+  margin-right: 5px; /* Slightly more margin on the right */
+}
+
+/* Ensure tray icons look okay if they rely on padding */
+#tray > .passive {
+    /* Styles for passive icons if needed */
+}
+#tray > .active {
+    /* Styles for active icons if needed */
+}
+#tray > .needs-attention {
+    /* Styles for icons needing attention if needed */
+}

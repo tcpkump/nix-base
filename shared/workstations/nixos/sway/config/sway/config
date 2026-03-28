@@ -1,0 +1,205 @@
+# Set mod key to Windows key
+set $mod Mod4
+
+input type:keyboard {
+    xkb_layout us
+    repeat_rate 50
+    repeat_delay 250
+}
+
+input type:pointer {
+    accel_profile flat
+    pointer_accel -0.1
+}
+
+input type:touchpad {
+    natural_scroll enabled
+    tap enabled
+    tap_button_map lrm
+}
+
+exec swayidle -w \
+        timeout 900 'swaylock -f' \
+        timeout 870 'swaymsg "output * dpms off"' \
+        resume 'swaymsg "output * dpms on"' \
+        before-sleep 'swaylock -f'
+
+bindsym XF86AudioRaiseVolume exec --no-startup-id wpctl set-volume -l 1.4 @DEFAULT_AUDIO_SINK@ 5%+
+bindsym XF86AudioLowerVolume exec --no-startup-id wpctl set-volume -l 1.4 @DEFAULT_AUDIO_SINK@ 5%-
+bindsym XF86AudioMute exec --no-startup-id wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+
+bindsym XF86AudioPlay exec --no-startup-id playerctl -p spotify play-pause
+bindsym XF86AudioNext exec --no-startup-id playerctl -p spotify next
+bindsym XF86AudioPrev exec --no-startup-id playerctl -p spotify previous
+
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set 5%+
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
+
+bindsym $mod+Return exec ghostty
+bindsym $mod+Shift+q kill
+bindsym $mod+e exec nautilus
+bindsym $mod+space exec "wofi --show drun"
+bindsym $mod+g exec grim -g "$(slurp -d)" - | swappy -f -
+bindsym $mod+q exec dunstctl close-all
+bindsym $mod+Shift+m exec swaylock
+
+bindsym $mod+f fullscreen toggle
+bindsym $mod+o floating toggle
+bindsym $mod+Shift+o sticky toggle
+
+# Jump between windows
+bindsym $mod+Tab exec swayr switch-to-urgent-or-lru-window
+
+# change focus with hjkl or arrow keys
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# move focused window
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# splits
+bindsym $mod+s split h
+bindsym $mod+v split v
+
+# Define names for default workspaces for which we configure key bindings later on.
+# We use variables to avoid repeating the names in multiple places.
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
+
+# switch to workspace
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+5 workspace number $ws5
+bindsym $mod+6 workspace number $ws6
+bindsym $mod+7 workspace number $ws7
+bindsym $mod+8 workspace number $ws8
+bindsym $mod+9 workspace number $ws9
+bindsym $mod+0 workspace number $ws10
+
+# move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5
+bindsym $mod+Shift+6 move container to workspace number $ws6
+bindsym $mod+Shift+7 move container to workspace number $ws7
+bindsym $mod+Shift+8 move container to workspace number $ws8
+bindsym $mod+Shift+9 move container to workspace number $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws10
+
+# default workspaces
+assign {
+    [app_id="Slack"] workspace $ws1
+    [app_id="Discord"] workspace $ws1
+    [app_id="Spotify"] workspace $ws1
+
+    [app_id="firefox"] workspace $ws2
+
+    [app_id="Steam"] workspace $ws4
+
+    [app_id="^steam_app.*"] workspace $ws5
+    [app_id="^Minecraft.*"] workspace $ws5
+
+    [app_id="obsidian"] workspace $ws9
+}
+
+
+for_window {
+    [app_id="firefox"] inhibit_idle fullscreen
+    [app_id="^steam_app.*"] inhibit_idle always
+    [app_id="^Minecraft.*"] inhibit_idle always
+
+    [class="steam"] floating enable
+    [app_id="Bitwarden"] floating enable
+    [instance="Godot_Engine"] floating enable
+    [instance="Godot_Editor"] floating enable
+    [title=".*- Godot Engine$"] floating disable
+
+    [window_role="pop-up"] floating enable
+    [window_role="bubble"] floating enable
+    [window_role="dialog"] floating enable
+    [window_type="dialog"] floating enable
+}
+
+# reload the configuration file
+bindsym $mod+Shift+c reload
+# restart sway inplace (preserves your layout/session, can be used to upgrade sway)
+bindsym $mod+Shift+r restart
+# exit sway (logs you out of your X session)
+bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+    # These bindings trigger as soon as you enter the resize mode
+
+    # Pressing left will shrink the window’s width.
+    # Pressing right will grow the window’s width.
+    # Pressing up will shrink the window’s height.
+    # Pressing down will grow the window’s height.
+    bindsym j resize shrink width 10 px or 10 ppt
+    bindsym k resize grow height 10 px or 10 ppt
+    bindsym l resize shrink height 10 px or 10 ppt
+    bindsym semicolon resize grow width 10 px or 10 ppt
+
+    # same bindings, but for the arrow keys
+    bindsym Left resize shrink width 10 px or 10 ppt
+    bindsym Down resize grow height 10 px or 10 ppt
+    bindsym Up resize shrink height 10 px or 10 ppt
+    bindsym Right resize grow width 10 px or 10 ppt
+
+    # back to normal: Enter or Escape or $mod+r
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+bar {
+    swaybar_command waybar
+}
+
+#### GAPS ####
+gaps inner 4
+gaps outer 0
+# Enable smart gaps (gaps used only when there's more than one container)
+smart_gaps on
+
+
+# Swayfx options
+corner_radius 5
+
+# Background Image
+exec_always --no-startup-id swaybg -i ~/Pictures/wallpaper.png
+
+# Highlight active window
+for_window [class="^.*"] border pixel 4
+
+# Disable borders when there's only one window in the workspace
+smart_borders on

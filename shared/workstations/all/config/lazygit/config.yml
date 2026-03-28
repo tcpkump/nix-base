@@ -1,0 +1,18 @@
+git:
+  pagers:
+    - colorArg: always
+      pager: >
+        delta --paging never --syntax-theme none
+        --file-style yellow
+        --file-decoration-style "yellow ul"
+        --hunk-header-decoration-style "yellow box"
+        --hunk-header-file-style yellow
+        --hunk-header-line-number-style yellow
+        --inline-hint-style yellow
+
+  commitPrefix:
+    - pattern: "(\\w+)[-_](\\d+).*"
+      replace: '[$1-$2] '
+
+  # https://github.com/jesseduffield/lazygit/issues/3758 for signing commits
+  overrideGpg: true
