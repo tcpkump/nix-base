@@ -32,18 +32,17 @@
                 inherit inputs system user;
               };
               users.${user} = {
-                imports =
-                  [
-                    "${flakeDir}/hosts/workstations/${hostname}/home.nix"
-                    "${self}/shared/workstations/all/home.nix"
-                  ]
-                  ++ extraUserModules
-                  ++ (
-                    if wslMachine then
-                      [ "${self}/shared/workstations/wsl/home.nix" ]
-                    else
-                      [ "${self}/shared/workstations/nixos/home.nix" ]
-                  );
+                imports = [
+                  "${flakeDir}/hosts/workstations/${hostname}/home.nix"
+                  "${self}/shared/workstations/all/home.nix"
+                ]
+                ++ extraUserModules
+                ++ (
+                  if wslMachine then
+                    [ "${self}/shared/workstations/wsl/home.nix" ]
+                  else
+                    [ "${self}/shared/workstations/nixos/home.nix" ]
+                );
               };
             };
           }
@@ -88,13 +87,12 @@
               inherit inputs system user;
             };
             users.${user} = {
-              imports =
-                [
-                  "${flakeDir}/hosts/workstations/${hostname}/home.nix"
-                  "${self}/shared/workstations/darwin/home.nix"
-                  "${self}/shared/workstations/all/home.nix"
-                ]
-                ++ extraUserModules;
+              imports = [
+                "${flakeDir}/hosts/workstations/${hostname}/home.nix"
+                "${self}/shared/workstations/darwin/home.nix"
+                "${self}/shared/workstations/all/home.nix"
+              ]
+              ++ extraUserModules;
             };
           };
         }
