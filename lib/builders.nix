@@ -8,12 +8,15 @@
       user,
       modules ? [ ],
       extraUserModules ? [ ],
+      extraSpecialArgs ? { },
       wslMachine ? false,
     }:
     inputs.nixpkgs.lib.nixosSystem {
       specialArgs = {
         inherit inputs system user;
-      };
+        nix-base = self;
+      }
+      // extraSpecialArgs;
       modules =
         modules
         ++ [
@@ -30,7 +33,9 @@
               backupFileExtension = "backup";
               extraSpecialArgs = {
                 inherit inputs system user;
-              };
+                nix-base = self;
+              }
+              // extraSpecialArgs;
               users.${user} = {
                 imports = [
                   "${flakeDir}/hosts/workstations/${hostname}/home.nix"
@@ -66,11 +71,14 @@
       user,
       modules ? [ ],
       extraUserModules ? [ ],
+      extraSpecialArgs ? { },
     }:
     inputs.nix-darwin.lib.darwinSystem {
       specialArgs = {
         inherit inputs system user;
-      };
+        nix-base = self;
+      }
+      // extraSpecialArgs;
       modules = modules ++ [
         { nixpkgs.hostPlatform = system; }
         "${flakeDir}/hosts/workstations/${hostname}/configuration.nix"
@@ -85,7 +93,9 @@
             backupFileExtension = "backup";
             extraSpecialArgs = {
               inherit inputs system user;
-            };
+              nix-base = self;
+            }
+            // extraSpecialArgs;
             users.${user} = {
               imports = [
                 "${flakeDir}/hosts/workstations/${hostname}/home.nix"
@@ -121,11 +131,14 @@
       hostname,
       system,
       modules ? [ ],
+      extraSpecialArgs ? { },
     }:
     inputs.nixpkgs.lib.nixosSystem {
       specialArgs = {
         inherit inputs system;
-      };
+        nix-base = self;
+      }
+      // extraSpecialArgs;
       modules = modules ++ [
         { nixpkgs.hostPlatform = system; }
         "${flakeDir}/hosts/servers/${hostname}/configuration.nix"
