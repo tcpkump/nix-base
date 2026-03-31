@@ -1,6 +1,12 @@
-{ pkgs, user, ... }:
+{
+  pkgs,
+  inputs,
+  user,
+  ...
+}:
 {
   home.username = user;
+  home.packages = import ./packages.nix { inherit inputs pkgs; };
   home.stateVersion = "23.11";
   programs.home-manager.enable = true;
 
