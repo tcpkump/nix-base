@@ -15,7 +15,7 @@ builder functions to produce system configurations.
 - **`shared/base/`** — Common Nix settings applied to all systems (nix config, openssh, etc.)
 - **`shared/workstations/all/`** — Cross-platform workstation config: shell, git, tmux, k9s, CLI tools, packages
 - **`shared/workstations/nixos/`** — NixOS-specific: display, audio, Bluetooth, GNOME, Sway
-- **`shared/workstations/darwin/`** — macOS-specific: Homebrew, Dock, nix-darwin options
+- **`shared/workstations/darwin/`** — macOS-specific: Homebrew, Dock, nix-darwin options (assumes [Determinate Nix](https://determinate.systems/nix/))
 - **`shared/workstations/wsl/`** — WSL-specific overrides
 
 ## Using this flake
