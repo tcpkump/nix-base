@@ -1,5 +1,6 @@
-{ ... }:
+{ user, ... }:
 {
+  home.homeDirectory = "/Users/${user}";
   home.file = {
     "./Library/Application Support/lazygit" = {
       source = ../all/config/lazygit;
