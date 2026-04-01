@@ -11,6 +11,7 @@ _:
 
   # Productivity Tools
   "unnaturalscrollwheels"
+  "steermouse"
 
   # Personal notes
   "obsidian"
