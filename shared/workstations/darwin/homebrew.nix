@@ -16,6 +16,7 @@
   homebrew = {
     enable = true;
     onActivation.cleanup = "zap";
+    taps = [ "homebrew/cask" ];
     # brews = pkgs.callPackage ./brews.nix { };
     casks = pkgs.callPackage ./casks.nix { };
 
