@@ -10,7 +10,6 @@ _:
   "firefox"
 
   # Productivity Tools
-  "unnaturalscrollwheels"
   "steermouse"
 
   # Personal notes
