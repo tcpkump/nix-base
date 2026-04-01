@@ -13,6 +13,13 @@
     { path = "/Applications/Ghostty.app/"; }
   ];
 
+  # Ensure homebrew binaries are in PATH so nix-darwin's generated
+  # `eval "$(brew shellenv)"` in /etc/zshrc can find brew itself.
+  environment.systemPath = [
+    "/opt/homebrew/bin"
+    "/opt/homebrew/sbin"
+  ];
+
   homebrew = {
     enable = true;
     onActivation.cleanup = "zap";
