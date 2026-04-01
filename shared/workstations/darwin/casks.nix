@@ -18,7 +18,9 @@ _:
   # Terminal
   "ghostty"
 
-  "openvpn-connect"
+  # Issue with networking extensions on macos, need to install manually
+  # "openvpn-connect"
+
   # Docker only installs correctly every OTHER time on macos smh
   # "docker"
 ]
