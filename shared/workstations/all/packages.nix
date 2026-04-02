@@ -18,7 +18,6 @@ with pkgs;
 
   # LLM tools (from llm-agents.nix)
   llm-agents.claude-code
-  llm-agents.codex
 
   # LSP/formatter
   nixd
