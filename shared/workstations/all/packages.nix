@@ -29,6 +29,7 @@ with pkgs;
   fluxcd
   k9s
   kubectl
+  kubernetes-helm
 
   podman
   podman-compose
