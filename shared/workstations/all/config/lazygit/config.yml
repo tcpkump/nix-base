@@ -28,7 +28,7 @@ customCommands:
     command: "git diff {{.SelectedLocalBranch.Name}}...HEAD | delta --paging always"
     context: 'localBranches'
     description: 'PR Diff (against selected branch)'
-    subprocess: true
+    output: terminal
   - key: 'O'
     command: "gh pr view --web"
     context: 'global'
