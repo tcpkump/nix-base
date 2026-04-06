@@ -18,6 +18,9 @@ _:
   # Terminal
   "ghostty"
 
+  # Local AI
+  "lm-studio"
+
   # Issue with networking extensions on macos, need to install manually
   # "openvpn-connect"
 
