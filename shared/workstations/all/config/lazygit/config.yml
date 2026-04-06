@@ -7,7 +7,7 @@ git:
   pagers:
     - colorArg: always
       pager: >
-        delta --paging never --syntax-theme none --context 10 --line-numbers --navigate
+        delta --paging never --syntax-theme none --line-numbers
         --file-style yellow
         --file-decoration-style "yellow ul"
         --hunk-header-decoration-style "yellow box"

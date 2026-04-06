@@ -55,6 +55,9 @@
         tag.sort = "version:refname";
 
         # general preference
+        diff = {
+          context = 10;
+        };
         core = {
           editor = "nvim";
         };
