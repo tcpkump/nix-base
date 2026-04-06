@@ -7,7 +7,7 @@ git:
   pagers:
     - colorArg: always
       pager: >
-        delta --paging never --syntax-theme none --context 10 --line-numbers
+        delta --paging never --syntax-theme none --context 10 --line-numbers --navigate
         --file-style yellow
         --file-decoration-style "yellow ul"
         --hunk-header-decoration-style "yellow box"
@@ -24,17 +24,8 @@ git:
 
 # Custom commands to make PR workflows faster
 customCommands:
-  - key: 'C'
-    command: "git diff {{.SelectedLocalBranch.Name}}...HEAD"
-    context: 'localBranches'
-    description: 'Diff against selected branch'
-    output: log
-  - key: 'P'
-    command: "git diff main...HEAD"
-    context: 'files'
-    description: 'Diff current branch against main (PR view)'
-    output: log
   - key: 'O'
     command: "gh pr view --web"
     context: 'global'
     description: 'Open current PR on GitHub'
+    output: log
