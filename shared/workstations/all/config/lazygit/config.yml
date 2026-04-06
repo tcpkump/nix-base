@@ -1,11 +1,13 @@
 gui:
   timeFormat: "02 Jan 06 15:04"
+  # Use side-by-side diffs when the screen is wide enough
+  sideBySideDiff: auto
 
 git:
   pagers:
     - colorArg: always
       pager: >
-        delta --paging never --syntax-theme none
+        delta --paging never --syntax-theme none --context 10 --line-numbers
         --file-style yellow
         --file-decoration-style "yellow ul"
         --hunk-header-decoration-style "yellow box"
@@ -19,3 +21,20 @@ git:
 
   # https://github.com/jesseduffield/lazygit/issues/3758 for signing commits
   overrideGpg: true
+
+# Custom commands to make PR workflows faster
+customCommands:
+  - key: 'C'
+    command: "git diff {{.SelectedLocalBranch.Name}}...HEAD"
+    context: 'localBranches'
+    description: 'Diff against selected branch'
+    stream: true
+  - key: 'P'
+    command: "git diff main...HEAD"
+    context: 'files'
+    description: 'Diff current branch against main (PR view)'
+    stream: true
+  - key: 'O'
+    command: "gh pr view --web"
+    context: 'global'
+    description: 'Open current PR on GitHub'
