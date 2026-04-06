@@ -28,12 +28,12 @@ customCommands:
     command: "git diff {{.SelectedLocalBranch.Name}}...HEAD"
     context: 'localBranches'
     description: 'Diff against selected branch'
-    stream: true
+    output: log
   - key: 'P'
     command: "git diff main...HEAD"
     context: 'files'
     description: 'Diff current branch against main (PR view)'
-    stream: true
+    output: log
   - key: 'O'
     command: "gh pr view --web"
     context: 'global'
