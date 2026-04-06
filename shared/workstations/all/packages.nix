@@ -16,8 +16,11 @@ with pkgs;
   google-cloud-sdk
   openssl
 
-  # LLM tools (from llm-agents.nix)
+  # LLM tools
   llm-agents.claude-code
+  llm-agents.opencode
+  llm-agents.pi
+  lmstudio
 
   # LSP/formatter
   nixd
