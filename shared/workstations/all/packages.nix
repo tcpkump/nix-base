@@ -21,7 +21,7 @@ with pkgs;
   llm-agents.gemini-cli
   llm-agents.opencode
   llm-agents.pi
-  # lmstudio
+  lmstudio
 
   # LSP/formatter
   nixd
