@@ -2,10 +2,6 @@
 {
   home.homeDirectory = "/Users/${user}";
   home.file = {
-    "./Library/Application Support/lazygit" = {
-      source = ../all/config/lazygit;
-      recursive = true;
-    };
     "./Library/Application Support/k9s" = {
       source = ../all/config/k9s;
       recursive = true;

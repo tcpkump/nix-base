@@ -301,11 +301,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1775493925,
-        "narHash": "sha256-zWxJ3WoHGd1z5FZOkhUswHseCAtbXzVb+GfZWSG7Ma0=",
+        "lastModified": 1775499086,
+        "narHash": "sha256-TiCkFYqbyD2dQeiDoq/w4V3MbnZ76ZJoGZ4yVNPP9mo=",
         "owner": "tcpkump",
         "repo": "nixCats-config",
-        "rev": "b1a17c5b6de3f1ee72b243b738227090195a2de8",
+        "rev": "abd6132d22201e7e2a819fe31be245ba78113c3b",
         "type": "github"
       },
       "original": {

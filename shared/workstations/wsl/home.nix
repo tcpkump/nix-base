@@ -1,10 +1,6 @@
 { ... }:
 {
   home.file = {
-    ".config/lazygit" = {
-      source = ../all/config/lazygit;
-      recursive = true;
-    };
     ".config/k9s" = {
       source = ../all/config/k9s;
       recursive = true;
