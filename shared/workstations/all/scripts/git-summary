@@ -183,7 +183,7 @@ def velocity(cwd, months):
 def firefighting(cwd, months):
     header(f"FIREFIGHTING PATTERNS  (last {months} months)")
     raw = git([
-        "log", "--oneline", f"--since={since_flag(months)}"
+        "log", "--format=%h %as %s", f"--since={since_flag(months)}"
     ], cwd)
 
     pattern = re.compile(r"revert|hotfix|emergency|rollback|incident|urgent", re.IGNORECASE)
@@ -195,8 +195,9 @@ def firefighting(cwd, months):
 
     print(f"  {red(str(len(hits)))} emergency-related commit(s) found\n")
     for line in hits[:20]:
-        sha, _, msg = line.partition(" ")
-        print(f"  {dim(sha)}  {red(msg)}")
+        parts = line.split(" ", 2)
+        sha, date, msg = parts[0], parts[1], parts[2] if len(parts) > 2 else ""
+        print(f"  {dim(sha)}  {dim(date)}  {red(msg)}")
 
 # ── Entry point ───────────────────────────────────────────────────────────────
 
