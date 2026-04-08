@@ -70,9 +70,13 @@ def repo_overview(cwd, months):
     # strip credentials from URL if present
     remote = re.sub(r"https?://[^@]+@", "https://", remote)
 
-    width = 52
-    inner = width
-    def pad(s): return s + " " * max(0, inner - len(re.sub(r'\033\[[0-9;]*m', '', s)))
+    name_content   = f" {repo_name}"
+    meta_content   = f" {branch} · {total} commits · started {first_date}"
+    remote_content = f" {remote}" if remote else ""
+
+    width = max(len(s) for s in [name_content, meta_content, remote_content] if s) + 1
+
+    def pad(s): return s + " " * max(0, width - len(re.sub(r'\033\[[0-9;]*m', '', s)))
 
     top    = "  ╭" + "─" * width + "╮"
     name_l = pad(f" {bold(repo_name)}")
