@@ -1,0 +1,2 @@
+#!/bin/sh
+commitlint --config ~/.commitlintrc.yaml --edit "$1"

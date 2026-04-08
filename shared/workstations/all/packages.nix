@@ -53,6 +53,8 @@ with pkgs;
   # networking tools
   nmap # A utility for network discovery and security auditing
 
+  commitlint
+
   # misc
   btop
   gcc

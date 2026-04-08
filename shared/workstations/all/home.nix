@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   inputs,
   user,
@@ -19,6 +20,12 @@
     };
     # snacks.nvim lazygit integration writes a theme file here at runtime
     ".cache/nvim/.keep".text = "";
+
+    ".config/git/hooks/commit-msg" = {
+      source = ./config/commit-msg;
+      executable = true;
+    };
+    ".commitlintrc.yaml".source = ./config/commitlintrc.yaml;
   };
 
   programs = {
@@ -60,6 +67,7 @@
         };
         core = {
           editor = "nvim";
+          hooksPath = "${config.home.homeDirectory}/.config/git/hooks";
         };
         push = {
           default = "simple";
