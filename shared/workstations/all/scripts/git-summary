@@ -1,0 +1,235 @@
+#!/usr/bin/env python3
+"""
+git-summary: a quick health check for any git repository.
+
+Usage:
+  git-summary [path] [--months N]
+
+  path      path to git repo (default: current directory)
+  --months  lookback window in months (default: 12)
+"""
+
+import subprocess
+import sys
+import os
+import re
+from collections import Counter
+from datetime import datetime, timedelta
+
+# ── ANSI helpers ──────────────────────────────────────────────────────────────
+
+RESET  = "\033[0m"
+BOLD   = "\033[1m"
+DIM    = "\033[2m"
+RED    = "\033[31m"
+YELLOW = "\033[33m"
+GREEN  = "\033[32m"
+CYAN   = "\033[36m"
+WHITE  = "\033[37m"
+
+def bold(s):    return f"{BOLD}{s}{RESET}"
+def dim(s):     return f"{DIM}{s}{RESET}"
+def red(s):     return f"{RED}{s}{RESET}"
+def yellow(s):  return f"{YELLOW}{s}{RESET}"
+def green(s):   return f"{GREEN}{s}{RESET}"
+def cyan(s):    return f"{CYAN}{s}{RESET}"
+
+def header(title):
+    line = f"  {bold(title)}"
+    underline = "  " + "─" * len(title)
+    print(f"\n{line}")
+    print(dim(underline))
+
+def section_empty(msg):
+    print(f"  {dim(msg)}")
+
+# ── Git helpers ───────────────────────────────────────────────────────────────
+
+def git(args, cwd):
+    result = subprocess.run(
+        ["git"] + args,
+        cwd=cwd,
+        capture_output=True,
+        text=True,
+    )
+    return result.stdout.strip()
+
+def since_flag(months):
+    return f"{months} months ago"
+
+# ── Sections ──────────────────────────────────────────────────────────────────
+
+def repo_overview(cwd, months):
+    repo_name = os.path.basename(os.path.abspath(cwd))
+    branch    = git(["rev-parse", "--abbrev-ref", "HEAD"], cwd)
+    total     = git(["rev-list", "--count", "HEAD"], cwd)
+    first     = git(["log", "--reverse", "--format=%ar", "--diff-filter=A", "HEAD"], cwd)
+    first_date = first.splitlines()[0] if first else "unknown"
+
+    remote = git(["remote", "get-url", "origin"], cwd)
+    # strip credentials from URL if present
+    remote = re.sub(r"https?://[^@]+@", "https://", remote)
+
+    width = 52
+    inner = width
+    def pad(s): return s + " " * max(0, inner - len(re.sub(r'\033\[[0-9;]*m', '', s)))
+
+    top    = "  ╭" + "─" * width + "╮"
+    name_l = pad(f" {bold(repo_name)}")
+    meta_l = pad(f" {dim(branch)} · {dim(total + ' commits')} · started {dim(first_date)}")
+    bot    = "  ╰" + "─" * width + "╯"
+
+    print(top)
+    print(f"  │{name_l}│")
+    print(f"  │{meta_l}│")
+    if remote:
+        remote_l = pad(f" {dim(remote)}")
+        print(f"  │{remote_l}│")
+    print(bot)
+
+
+def churn(cwd, months):
+    header(f"HIGH-CHURN FILES  (last {months} months)")
+    raw = git([
+        "log", f"--since={since_flag(months)}",
+        "--format=", "--name-only", "--diff-filter=M"
+    ], cwd)
+    counts = Counter(f for f in raw.splitlines() if f.strip())
+    if not counts:
+        section_empty("No file modifications found.")
+        return
+    for path, n in counts.most_common(15):
+        bar = "█" * min(n // 2, 30)
+        print(f"  {str(n).rjust(5)}  {cyan(bar)}  {path}")
+
+
+def contributors(cwd, months):
+    header(f"CONTRIBUTORS  (last {months} months)")
+    raw = git([
+        "shortlog", "-sn", "--no-merges",
+        f"--since={since_flag(months)}", "HEAD"
+    ], cwd)
+    if not raw:
+        section_empty("No commits in this window.")
+        return
+
+    entries = []
+    for line in raw.splitlines():
+        parts = line.strip().split("\t", 1)
+        if len(parts) == 2:
+            entries.append((int(parts[0]), parts[1]))
+
+    total = sum(n for n, _ in entries)
+    if total == 0:
+        section_empty("No commits in this window.")
+        return
+
+    max_name = max(len(name) for _, name in entries)
+    for n, name in entries[:10]:
+        pct = n / total * 100
+        bar = "█" * min(int(pct / 3), 30)
+        pct_str = f"{pct:5.1f}%"
+        flag = red("  ← bus factor risk") if pct >= 60 and n == entries[0][0] else ""
+        print(f"  {str(n).rjust(5)}  {name.ljust(max_name)}  {dim(pct_str)}  {green(bar)}{flag}")
+
+
+def bug_prone(cwd, months):
+    header(f"BUG-PRONE FILES  (last {months} months)")
+    raw = git([
+        "log", f"--since={since_flag(months)}",
+        "-i", "-E", "--grep=fix|bug|broken|patch|revert",
+        "--name-only", "--format="
+    ], cwd)
+    counts = Counter(f for f in raw.splitlines() if f.strip())
+    if not counts:
+        section_empty("No bug-related commits found.")
+        return
+    for path, n in counts.most_common(15):
+        flag = red("  ← high risk") if n >= 5 else ""
+        print(f"  {str(n).rjust(5)}  {path}{flag}")
+
+
+def velocity(cwd, months):
+    header(f"DEVELOPMENT VELOCITY  (last {months} months)")
+    raw = git([
+        "log", f"--since={since_flag(months)}",
+        "--format=%ad", "--date=format:%Y-%m"
+    ], cwd)
+    if not raw:
+        section_empty("No commits found.")
+        return
+
+    counts = Counter(raw.splitlines())
+    # fill missing months
+    today = datetime.today()
+    all_months = []
+    for i in range(months - 1, -1, -1):
+        d = today - timedelta(days=i * 30)
+        all_months.append(d.strftime("%Y-%m"))
+
+    max_count = max(counts.values()) if counts else 1
+    for month in all_months:
+        n = counts.get(month, 0)
+        bar_len = int(n / max_count * 28) if max_count else 0
+        bar = "█" * bar_len
+        color = yellow if n < max_count * 0.3 else green
+        print(f"  {dim(month)}  {color(bar.ljust(28))}  {str(n).rjust(4)}")
+
+
+def firefighting(cwd, months):
+    header(f"FIREFIGHTING PATTERNS  (last {months} months)")
+    raw = git([
+        "log", "--oneline", f"--since={since_flag(months)}"
+    ], cwd)
+
+    pattern = re.compile(r"revert|hotfix|emergency|rollback|incident|urgent", re.IGNORECASE)
+    hits = [line for line in raw.splitlines() if pattern.search(line)]
+
+    if not hits:
+        print(f"  {green('✓')}  {dim('No firefighting commits found.')}")
+        return
+
+    print(f"  {red(str(len(hits)))} emergency-related commit(s) found\n")
+    for line in hits[:20]:
+        sha, _, msg = line.partition(" ")
+        print(f"  {dim(sha)}  {red(msg)}")
+
+# ── Entry point ───────────────────────────────────────────────────────────────
+
+def main():
+    args = sys.argv[1:]
+    months = 12
+    cwd = None
+
+    i = 0
+    while i < len(args):
+        if args[i] == "--months" and i + 1 < len(args):
+            months = int(args[i + 1])
+            i += 2
+        elif not args[i].startswith("--"):
+            cwd = args[i]
+            i += 1
+        else:
+            i += 1
+
+    if cwd is None:
+        cwd = os.getcwd()
+
+    cwd = os.path.abspath(cwd)
+
+    if not os.path.isdir(os.path.join(cwd, ".git")):
+        print(red(f"Error: {cwd} is not a git repository"), file=sys.stderr)
+        sys.exit(1)
+
+    print()
+    repo_overview(cwd, months)
+    churn(cwd, months)
+    contributors(cwd, months)
+    bug_prone(cwd, months)
+    velocity(cwd, months)
+    firefighting(cwd, months)
+    print()
+
+
+if __name__ == "__main__":
+    main()

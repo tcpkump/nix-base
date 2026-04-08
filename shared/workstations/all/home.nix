@@ -13,6 +13,10 @@
   home.file = {
     ".terraformrc".source = ./config/terraformrc;
     ".config/scripts/tmux-project-switcher.sh".source = ./scripts/tmux-project-switcher.sh;
+    ".local/bin/git-summary" = {
+      source = ./scripts/git-summary;
+      executable = true;
+    };
     # snacks.nvim lazygit integration writes a theme file here at runtime
     ".cache/nvim/.keep".text = "";
   };
