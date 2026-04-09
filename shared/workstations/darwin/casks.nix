@@ -15,6 +15,9 @@ _:
   # Personal notes
   "obsidian"
 
+  # Media
+  "spotify"
+
   # Terminal
   "ghostty"
 
