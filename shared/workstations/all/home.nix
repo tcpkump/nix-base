@@ -62,7 +62,6 @@
         };
         core = {
           editor = "nvim";
-          hooksPath = "${config.home.homeDirectory}/.config/git/hooks";
         };
         push = {
           default = "simple";
