@@ -21,11 +21,6 @@
     # snacks.nvim lazygit integration writes a theme file here at runtime
     ".cache/nvim/.keep".text = "";
 
-    ".config/git/hooks/commit-msg" = {
-      source = ./config/commit-msg;
-      executable = true;
-    };
-    ".commitlintrc.yaml".source = ./config/commitlintrc.yaml;
   };
 
   programs = {
