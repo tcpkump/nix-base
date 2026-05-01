@@ -32,6 +32,8 @@
     NIXOS_OZONE_WL = "1";
   };
 
+  users.users.${user}.extraGroups = [ "video" ];
+
   home-manager.users.${user} = {
     wayland.windowManager.sway = {
       enable = true;
@@ -44,7 +46,7 @@
         modes = { };
         bars = [ ];
       };
-      # sway config is fetched from host configs at hosts/<host>/sway.nix
+      extraConfig = builtins.readFile ./config/sway/config;
     };
     # kanshi profiles are managed from host configs at hosts/<host>/sway.nix
     services.kanshi.enable = true;
