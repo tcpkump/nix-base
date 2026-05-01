@@ -1,5 +1,4 @@
 {
-  config,
   pkgs,
   inputs,
   user,
@@ -50,6 +49,7 @@
     git = {
       enable = true;
       lfs.enable = true;
+      signing.format = null;
       settings = {
         # improves listing
         column.ui = "auto";

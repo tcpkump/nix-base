@@ -30,7 +30,7 @@ with pkgs;
 
   # cursor size
   xsettingsd
-  xorg.xrdb
+  xrdb
 
   # display helper
   wdisplays

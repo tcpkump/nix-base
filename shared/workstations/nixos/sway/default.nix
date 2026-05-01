@@ -51,7 +51,10 @@
     # kanshi profiles are managed from host configs at hosts/<host>/sway.nix
     services.kanshi.enable = true;
 
-    gtk.enable = true;
+    gtk = {
+      enable = true;
+      gtk4.theme = null;
+    };
     home.pointerCursor = {
       gtk.enable = true;
       package = pkgs.bibata-cursors;
@@ -74,7 +77,6 @@
       swappy
 
       # Security and authentication
-      pass-wayland
       polkit_gnome
 
       # helper

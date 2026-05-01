@@ -15,7 +15,7 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  documentation.man.generateCaches = true;
+  documentation.man.cache.enable = true;
 
   networking = {
     firewall.enable = true;
