@@ -37,4 +37,7 @@ with pkgs;
 
   # cli utilities
   usbutils
+
+  # Security
+  pass-wayland
 ]

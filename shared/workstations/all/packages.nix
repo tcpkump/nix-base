@@ -69,7 +69,6 @@ with pkgs;
   bitwarden-cli
   git-credential-manager
   libfido2
-  pass
   yubikey-agent
 
   # manuals
