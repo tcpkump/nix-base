@@ -1,0 +1,93 @@
+name: Weekly Flake Update
+
+on:
+  schedule:
+    - cron: "0 9 * * 1" # Monday 9am UTC
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Update flake inputs
+        id: update
+        run: |
+          nix flake update 2>&1 | tee update-log.txt
+          if git diff --quiet flake.lock; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run flake-checker
+        id: checker
+        run: |
+          # flake-checker exits non-zero if it finds issues; capture output regardless
+          nix run nixpkgs#flake-checker -- --check-supported 2>&1 | tee checker-log.txt || true
+          if grep -qiE "warn|error|deprecated|unsupported|eol" checker-log.txt; then
+            echo "has_warnings=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_warnings=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit updated flake.lock
+        if: steps.update.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add flake.lock
+          git commit -m "chore: nix flake update"
+          git push
+        env:
+          # Replace with a PAT (repo scope) if main has branch protection requiring PRs
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Open issue if warnings detected
+        if: steps.checker.outputs.has_warnings == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const checkerLog = fs.readFileSync('checker-log.txt', 'utf8');
+            const updateLog = fs.readFileSync('update-log.txt', 'utf8');
+
+            // Check for existing open issue to avoid duplicates
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'nix-update-warning',
+              state: 'open',
+            });
+
+            const body = `## Nix flake update warnings detected\n\n` +
+              `**Run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}\n\n` +
+              `### flake-checker output\n\`\`\`\n${checkerLog}\n\`\`\`\n\n` +
+              `### Update log\n\`\`\`\n${updateLog}\n\`\`\``;
+
+            if (issues.data.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issues.data[0].number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: 'nix flake update: warnings detected',
+                body,
+                labels: ['nix-update-warning'],
+              });
+            }
