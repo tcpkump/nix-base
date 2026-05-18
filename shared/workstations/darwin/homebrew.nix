@@ -8,7 +8,7 @@
   local.dock.enable = true;
   local.dock.entries = [
     { path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app/"; }
-    { path = "/Applications/Firefox.app/"; }
+    { path = "/Applications/Google Chrome.app/"; }
     { path = "/Applications/Slack.app/"; }
     { path = "/Applications/Ghostty.app/"; }
   ];
