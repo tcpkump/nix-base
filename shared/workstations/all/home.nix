@@ -267,6 +267,9 @@
       completionInit = "autoload -U compinit && compinit -C";
 
       initContent = ''
+        # Treat / as a word boundary for ctrl-W
+        WORDCHARS="''${WORDCHARS/\//}"
+
         # Completion performance
         zstyle ':completion:*' use-cache yes
         zstyle ':completion:*' cache-path ~/.zsh/cache
