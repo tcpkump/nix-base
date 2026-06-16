@@ -18,9 +18,7 @@ with pkgs;
 
   # LLM tools
   llm-agents.claude-code
-  llm-agents.gemini-cli
   llm-agents.opencode
-  llm-agents.pi
 
   # LSP/formatter
   nixd
