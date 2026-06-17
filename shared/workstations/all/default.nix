@@ -1,7 +1,8 @@
 { pkgs, ... }:
 {
   # Workstation-specific configuration
-  time.timeZone = "America/Indiana/Indianapolis";
+  # time.timeZone = "America/Indiana/Indianapolis";
+  time.timeZone = "America/Phoenix";
 
   fonts.packages = with pkgs; [
     nerd-fonts.hack
