@@ -302,11 +302,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1779113439,
-        "narHash": "sha256-YoaMWj9w5PmSCFMQMYD6Yd3cCesoIRt5J5XD9ScA+G0=",
+        "lastModified": 1781704996,
+        "narHash": "sha256-pBr54e8oPnQPRnuwYkObwk1uPT+GfXluFzYvFF71Z9Y=",
         "owner": "tcpkump",
         "repo": "nixCats-config",
-        "rev": "b0f44e3679fabcbe416959e04c5cd53b0dc5f2b1",
+        "rev": "fb37190d7d41ea2da93c66b64198d9167ba62024",
         "type": "github"
       },
       "original": {

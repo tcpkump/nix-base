@@ -14,4 +14,14 @@
   users.users.${user} = {
     home = "/Users/${user}";
   };
+
+  # Battery-only power management. AC settings are left at macOS defaults.
+  # powernap: no background CPU/network activity while display is off
+  # tcpkeepalive: allow TCP connections to drop during sleep (SSH drops anyway)
+  # proximitywake: suppress Bluetooth-proximity wakes from iPhone/Apple Watch
+  system.activationScripts.pmset-battery.text = ''
+    /usr/bin/pmset -b powernap 0
+    /usr/bin/pmset -b tcpkeepalive 0
+    /usr/bin/pmset -b proximitywake 0
+  '';
 }

@@ -106,7 +106,7 @@
       settings = {
         auto_sync = true;
         sync_address = "https://api.atuin.sh";
-        sync_frequency = "5m";
+        sync_frequency = "15m";
 
         inline_height = 15;
         search_mode_shell_up_key_binding = "prefix";
