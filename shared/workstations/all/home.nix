@@ -28,21 +28,18 @@
     ssh = {
       enable = true;
       enableDefaultConfig = false;
-      matchBlocks = {
-        "*" = {
-          # TODO: filter this down to trusted endpoints?
-          addKeysToAgent = "yes";
-          # from home-manager documentation https://home-manager-options.extranix.com/?query=programs.ssh&release=master
-          forwardAgent = false;
-          compression = false;
-          serverAliveInterval = 0;
-          serverAliveCountMax = 3;
-          hashKnownHosts = false;
-          userKnownHostsFile = "~/.ssh/known_hosts";
-          controlMaster = "no";
-          controlPath = "~/.ssh/master-%r@%n:%p";
-          controlPersist = "no";
-        };
+      settings."*" = {
+        # TODO: filter this down to trusted endpoints?
+        AddKeysToAgent = "yes";
+        ForwardAgent = false;
+        Compression = false;
+        ServerAliveInterval = 0;
+        ServerAliveCountMax = 3;
+        HashKnownHosts = false;
+        UserKnownHostsFile = "~/.ssh/known_hosts";
+        ControlMaster = "no";
+        ControlPath = "~/.ssh/master-%r@%n:%p";
+        ControlPersist = "no";
       };
     };
 
