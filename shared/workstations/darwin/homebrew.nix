@@ -22,7 +22,7 @@
 
   homebrew = {
     enable = true;
-    onActivation.cleanup = "zap";
+    onActivation.cleanup = "none"; # "zap" broken: Homebrew deprecated --cleanup flag from brew bundle install
     taps = [ "homebrew/cask" ];
     brews = pkgs.callPackage ./brews.nix { };
     casks = pkgs.callPackage ./casks.nix { };
