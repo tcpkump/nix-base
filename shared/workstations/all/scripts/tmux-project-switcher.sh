@@ -86,10 +86,9 @@ create_worktree() {
     git -C "$full_repo_path" worktree add "$worktree_path" -b "$branch_name"
 
     # Open the new worktree immediately
-    local project_name
-    project_name=$(basename "$worktree_path")
-    tmux new-window -c "$worktree_path" -n "$project_name"
-    tmux send-keys 'nvim' 'Enter'
+    local layout
+    layout=$(resolve_layout "$worktree_path" "")
+    open_project "$worktree_path" "$layout"
 }
 
 # Remove a linked worktree after checking for work that would be lost.
@@ -132,6 +131,52 @@ delete_worktree() {
     fi
 }
 
+# Resolve layout: per-project .tmux-layout file, else global default (cc).
+resolve_layout() {
+    local full_path="$1"
+    local override="$2"
+
+    [[ -n "$override" ]] && { echo "$override"; return; }
+
+    local layout_file="$full_path/.tmux-layout"
+    if [[ -f "$layout_file" ]]; then
+        local val
+        val=$(tr -d '[:space:]' < "$layout_file")
+        case "$val" in
+            cc|terminal|fullscreen) echo "$val"; return ;;
+        esac
+    fi
+
+    echo "cc"
+}
+
+open_project() {
+    local full_path="$1"
+    local layout="$2"
+    local project_name
+    project_name=$(basename "$full_path")
+
+    case "$layout" in
+        cc)
+            tmux new-window -c "$full_path" -n "$project_name"
+            tmux send-keys 'nvim' 'Enter'
+            tmux split-window -h -p 40 -c "$full_path"
+            tmux send-keys 'claude' 'Enter'
+            tmux select-pane -L
+            ;;
+        terminal)
+            tmux new-window -c "$full_path" -n "$project_name"
+            tmux send-keys 'nvim' 'Enter'
+            tmux split-window -h -p 40 -c "$full_path"
+            tmux select-pane -L
+            ;;
+        fullscreen)
+            tmux new-window -c "$full_path" -n "$project_name"
+            tmux send-keys 'nvim' 'Enter'
+            ;;
+    esac
+}
+
 # Main function
 main() {
     # Check if we're in a tmux session
@@ -157,8 +202,8 @@ main() {
         --height=40% \
         --reverse \
         --border \
-        --header="enter: open  ctrl-x: delete worktree" \
-        --expect=ctrl-x) || exit 0
+        --header="enter: open  ctrl-t: terminal split  ctrl-f: fullscreen  ctrl-x: delete worktree" \
+        --expect=ctrl-x,ctrl-t,ctrl-f) || exit 0
 
     local key selected
     key=$(printf "%s" "$result" | head -1)
@@ -194,17 +239,15 @@ main() {
         exit 0
     fi
 
-    # Get the project name for the window title (just the directory name)
-    local project_name
-    project_name=$(basename "$selected")
+    local layout_override=""
+    case "$key" in
+        ctrl-t) layout_override="terminal" ;;
+        ctrl-f) layout_override="fullscreen" ;;
+    esac
 
-    # Create a new tmux window with the project directory as working directory
-    tmux new-window -c "$full_path" -n "$project_name"
-
-    # Open neovim in the new window
-    tmux send-keys 'nvim' 'Enter'
-
-    echo "Opened project '$selected' in new window: $project_name"
+    local layout
+    layout=$(resolve_layout "$full_path" "$layout_override")
+    open_project "$full_path" "$layout"
 }
 
 # Check if fzf is available
