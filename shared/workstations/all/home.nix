@@ -17,6 +17,10 @@
       source = ./scripts/git-summary;
       executable = true;
     };
+    ".local/bin/nix-cascade-update" = {
+      source = ./scripts/nix-cascade-update.sh;
+      executable = true;
+    };
     # snacks.nvim lazygit integration writes a theme file here at runtime
     ".cache/nvim/.keep".text = "";
 
@@ -395,6 +399,28 @@
         aws-export() {
             eval $(aws configure export-credentials --format env)
             echo "AWS credentials have been exported to your shell session."
+        }
+
+        # Rebuild pointing upstream deps at local checkouts to test changes without pushing.
+        # Usage: nix-rebuild-local [--base] [--cats]
+        #   --base: use local nix-base checkout instead of locked GitHub rev
+        #   --cats: use local nixCats-config checkout instead of locked GitHub rev
+        # Env: NIX_REPOS_DIR (default: ~/repos/personal), NIX_CONFIG_NAME (default: hostname)
+        nix-rebuild-local() {
+          local repos_dir="''${NIX_REPOS_DIR:-$HOME/repos/personal}"
+          local config="''${NIX_CONFIG_NAME:-$(hostname -s)}"
+          local -a overrides=()
+          for arg in "$@"; do
+            case "$arg" in
+              --base) overrides+=(--override-input nix-base path:"$repos_dir/nix-base") ;;
+              --cats) overrides+=(--override-input nix-base/nixcats-config path:"$repos_dir/nixCats-config") ;;
+            esac
+          done
+          if [[ "$(uname)" == "Darwin" ]]; then
+            darwin-rebuild switch --flake "$repos_dir/nix-work#$config" "''${overrides[@]}"
+          else
+            sudo nixos-rebuild switch --flake "$repos_dir/nix-work#$config" "''${overrides[@]}"
+          fi
         }
 
         # Check for pre-commit-config when changing into dir
