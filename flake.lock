@@ -281,11 +281,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1781704996,
-        "narHash": "sha256-pBr54e8oPnQPRnuwYkObwk1uPT+GfXluFzYvFF71Z9Y=",
+        "lastModified": 1783609138,
+        "narHash": "sha256-3HVoMNRqxOL7DmSmxAL3Sa3SN79UaEc2r1M9uehsArk=",
         "owner": "tcpkump",
         "repo": "nixCats-config",
-        "rev": "fb37190d7d41ea2da93c66b64198d9167ba62024",
+        "rev": "6d55f5a2ff535eb36fdeb9302847de568ade759a",
         "type": "github"
       },
       "original": {
