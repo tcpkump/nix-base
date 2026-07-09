@@ -2,6 +2,10 @@
 {
   system.primaryUser = user;
 
+  # darwin-manual-html is broken in recent nix-darwin due to a builtins.derivation
+  # store path context bug. Disable the HTML manual; man pages still work.
+  documentation.enable = false;
+
   # Determinate Nix manages the Nix installation on macOS. Disable
   # nix-darwin's built-in Nix management to avoid conflicts with the
   # Determinate daemon. See: https://determinate.systems/nix/
