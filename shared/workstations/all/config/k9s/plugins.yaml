@@ -251,7 +251,7 @@ plugins:
         $NAME
         |& less -K
   get-suspended-helmreleases:
-    shortCut: Shift-S
+    shortCut: Shift-H
     confirm: false
     description: Suspended Helm Releases
     scopes:
@@ -268,7 +268,7 @@ plugins:
         | jq -r '.items[] | select(.spec.suspend==true) | [.metadata.namespace,.metadata.name,.spec.suspend] | @tsv'
         | less -K
   get-suspended-kustomizations:
-    shortCut: Shift-S
+    shortCut: Shift-K
     confirm: false
     description: Suspended Kustomizations
     scopes:
