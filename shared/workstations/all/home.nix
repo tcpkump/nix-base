@@ -90,6 +90,7 @@
       tmux = {
         enableShellIntegration = true;
       };
+      historyWidget.command = ""; # Atuin owns Ctrl-R
     };
 
     direnv = {
