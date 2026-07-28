@@ -76,6 +76,7 @@ plugins:
         reconcile helmrelease
         --context $CONTEXT
         -n $NAMESPACE $NAME
+        --force
         | less -K
   reconcile-helm-repo:
     shortCut: Shift-Z
