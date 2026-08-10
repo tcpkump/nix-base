@@ -24,4 +24,9 @@
     /usr/bin/pmset -b tcpkeepalive 0
     /usr/bin/pmset -b proximitywake 0
   '';
+
+  system.defaults.NSGlobalDomain = {
+    KeyRepeat = 2;
+    InitialKeyRepeat = 15;
+  };
 }
