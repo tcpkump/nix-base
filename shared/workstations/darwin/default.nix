@@ -27,6 +27,6 @@
 
   system.defaults.NSGlobalDomain = {
     KeyRepeat = 2;
-    InitialKeyRepeat = 15;
+    InitialKeyRepeat = 30;
   };
 }
