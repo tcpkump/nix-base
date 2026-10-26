@@ -69,6 +69,8 @@
           autoSetupRemote = true;
           followTags = true;
         };
+        # only auto-track when names match; branching off origin/master otherwise breaks push.default=simple
+        branch.autoSetupMerge = "simple";
         fetch = {
           prune = true;
           pruneTags = true;
