@@ -1,11 +1,16 @@
-{ user, ... }:
+{ pkgs, user, ... }:
 {
   home.homeDirectory = "/Users/${user}";
+  home.packages = [ pkgs.pass ];
   home.file = {
     "./Library/Application Support/k9s" = {
       source = ../all/config/k9s;
       recursive = true;
     };
+    # The agent itself is started by nix-darwin's programs.gnupg.agent.
+    ".gnupg/gpg-agent.conf".text = ''
+      pinentry-program ${pkgs.pinentry_mac}/bin/pinentry-mac
+    '';
   };
 
   programs = {

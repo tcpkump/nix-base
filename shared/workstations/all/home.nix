@@ -285,6 +285,10 @@
 
         ulimit -n 4096 # nix rebuilds need to open many files
 
+        # The system-level GPG_TTY export only runs in the first shell, so
+        # tmux panes would otherwise send pinentry to that shell's tty.
+        export GPG_TTY=$(tty)
+
         # Check if tmux is installed
         if [ -x "$(command -v tmux)" ] && [ -z "''${TMUX}" ]; then
           # For NixOS (Linux), check for DISPLAY

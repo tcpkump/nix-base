@@ -58,7 +58,6 @@ with pkgs;
   gcc
   gh
   gnumake
-  gnupg
   killall
   tree
   which
